@@ -33,15 +33,17 @@ extern Polygon polygons[MAX_POLYGONS];
 extern int polygonCount;
 
 // Function prototypes
+float randomFloat(float min, float max);
 void initPolygon(Polygon *polygon, int16_t *vertices, int16_t numVertices, int16_t color);
 void addPolygon(int16_t *vertices, int16_t numVertices, int16_t color);
 void removePolygon(int16_t index);
 void initPolygons();
 void freePolygons();
 void initPlayer();
+void initEnemy();
 void movePlayer(Player *player, float stepX, float stepY, uint8_t polar);
 void rotatePlayer(Player *player, float angle);
-void gameLoop();
+void gameLoop(int16_t difficulity);
 void startNewGame(int16_t difficility);
 
 #endif /* INC_GAMELOGIC_H_ */
