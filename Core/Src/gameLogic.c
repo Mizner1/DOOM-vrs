@@ -109,7 +109,8 @@ void initPlayer() {
     player.z = 50;         // Initial Z position
     player.rotation = 0.5; // Initial rotation angle
     player.health = 100;    // Starting health
-    player.ammo = 50;       // Starting ammo
+    player.armor = 100;     // Starting armor
+    player.ammo = 10;       // Starting ammo
 }
 
 // Function to initialize the player
@@ -119,7 +120,8 @@ void initEnemy() {
 	enemy.z = 50;         // Initial Z position
 	enemy.rotation = 0.5; // Initial rotation angle
 	enemy.health = 100;    // Starting health
-	enemy.ammo = 50;       // Starting ammo
+	enemy.armor = 0;     // Starting armor
+	enemy.ammo = 10;       // Starting ammo
 }
 
 // pohyb hraca na osi X a Y
@@ -131,12 +133,12 @@ void movePlayer(Player *player, float stepX, float stepY, uint8_t polar) {
 
 	//treba doladit znamienka a sin/cos funkcie na moveX a moveY
 	if (polar){	//ak sa hybeme vzhladom na natocenie hraca
-		float moveX = stepX*cos(player->rotation) + stepY*sin(player->rotation);
-		float moveY = stepX*sin(player->rotation) + stepY*cos(player->rotation);
+		moveX = stepX*cos(player->rotation) + stepY*sin(player->rotation);
+		moveY = stepX*sin(player->rotation) + stepY*cos(player->rotation);
 	}
 	else{		//ak chceme hraca premiestnit bez ohladu jeho na rotaciu
-		float moveX = stepX;
-		float moveY = stepY;
+		moveX = stepX;
+		moveY = stepY;
 	}
 
 	//when hitting wall the player slides along the other axis
@@ -170,15 +172,22 @@ void gameLoop(int16_t difficulity){
 
 	int8_t step = 5;	// kazdych 10 pixelov bude bodka, samozrejme 5 je lepsie, ale viac laguje
 
-	lcdPutS("test 3D rendera:", 220, 10, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
-	lcdRectangle(20, 225, 300, 250, decodeRgbValue(255, 255, 255)); //dolny status bar
-	lcdCircle(160,232,5,decodeRgbValue(255, 255, 255)); //akysi kruh, v povodnej doom je tam hlava hraca
-
 	int16_t kills2win = 1; // podmienka na skoncenie levelu, zavisi od obtiaznosti
 	int16_t kills = 0;
 	float vzX = 0;			//vzdialenost medzi hracom a nepriatelom
 	float vzY = 0;
 	float vz = 0;
+
+	// premenne potrebne k mechanike strelby
+	uint8_t loadedState = 1;		//flag potrebny pocas nabijania zbrane
+	uint16_t loadedAmmo = 0;			//premenna potrebna pocas nabijania
+	uint16_t loadSpeed = 3;			//rychlost nabijania
+	uint16_t magazineCapacity = 10;	//kapacita zasobnika
+	int16_t bulletSpeed = 10;				//rychlost strely
+	int16_t bulletDamage = 120;				//damage strely (1 hit kill)
+	float bulletX = 0;			//suradnice strely
+	float bulletY = 0;
+	float bulletAngle = 0;			//smer strely
 
 	int16_t enemySpeed = 0;
 	int16_t enemyDamage = 0;
@@ -197,7 +206,27 @@ void gameLoop(int16_t difficulity){
 		break;
 	}
 
-	while(kills < kills2win){
+	lcdPutS("beta testing:", 220, 10, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	lcdRectangle(20, 225, 300, 250, decodeRgbValue(255, 255, 255)); //dolny status bar
+	lcdCircle(160,232,5,decodeRgbValue(255, 255, 255)); //akysi kruh, v povodnej doom je tam hlava hraca
+	char ammoText[16];
+	char healthText[16];
+	char armorText[16];
+	lcdPutS("AMMO", 305, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	sprintf(ammoText, "%d", player.ammo);
+	lcdPutS(ammoText, 295, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+
+	lcdPutS("HEALTH", 140, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	sprintf(healthText, "%d%%", player.health);
+	lcdPutS(healthText, 145, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+
+	lcdPutS("ARMOR", 80, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	sprintf(armorText, "%d%%", player.armor);
+	lcdPutS(armorText, 20, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+
+
+	while(kills < kills2win){		// hlavny cyklus hry
+
 
 
 		// vykreslovanie mapy
@@ -259,29 +288,90 @@ void gameLoop(int16_t difficulity){
 			initEnemy();
 		}
 		if(enemy.health > 0) {		//logika nepriatela kym je nazive
-			vzX = enemy->x - player->x;
-			vzY = enemy->y - player->y;
-			vz = sqrt(vzX^2 + vzY^2);
+			vzX = enemy.x - player.x;
+			vzY = enemy.y - player.y;
+			vz = sqrt(vzX*vzX + vzY*vzX);
 			if(vz>50){						// nahana hraca po mape
 				if(vzX>0) {
-					enemy->x -= enemySpeed;
+					enemy.x -= enemySpeed;
 				}
 				if(vzX<0) {
-					enemy->x += enemySpeed;
+					enemy.x += enemySpeed;
 				}
 				if(vzY>0) {
-					enemy->y -= enemySpeed;
+					enemy.y -= enemySpeed;
 				}
 				if(vzY<0) {
-					enemy->y += enemySpeed;
+					enemy.y += enemySpeed;
 				}
 			}
 			else if(vz<50) {				//melee damage near player
-				player->health -= enemyDamage;
+				if(player.armor>0) {
+					player.armor -= enemyDamage;
+					lcdPutS("ARMOR", 80, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+					sprintf(armorText, "%d%%", player.armor);
+					lcdPutS(armorText, 20, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+				}
+				else{
+					player.health -= enemyDamage;
+					lcdPutS("HEALTH", 160, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+					sprintf(healthText, "%d%%", player.health);
+					lcdPutS(healthText, 145, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+				}
 			}
 		}
 
+		//mechanika strelby
+		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1) == GPIO_PIN_RESET){
+			if(player.ammo>0) {			//ak mame naboje
+				player.ammo--;
+				lcdPutS("AMMO", 305, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+				sprintf(ammoText, "%d", player.ammo);
+				lcdPutS(ammoText, 295, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+
+				float enemyDist = 0;
+				bulletX = player.x;
+				bulletY = player.y;
+				bulletAngle = player.rotation;
+
+				//samotny let strely
+				while( (bulletX<boundX)&&(bulletX>0)&&(bulletY<boundY)&&(bulletY>0) ) {
+					bulletX += bulletSpeed*cos(bulletAngle) ;
+					bulletX += bulletSpeed*sin(bulletAngle) ;
+					enemyDist = sqrt((enemy.x-bulletX)*(enemy.x-bulletX)+(enemy.y-bulletY)*(enemy.y-bulletY));
+					if(enemyDist<50) {			//ak zasiahne nepriatela
+						enemy.health -= bulletDamage;
+						break;
+					}
+				}
+				if(player.ammo<=0) {	//ked dojdu naboje tak sa prepnu stavy
+					loadedState = 0;
+					loadedAmmo = 0;
+				}
+			}
+			else if(player.ammo<=0) {	//ked dojdu naboje, tak reload
+				if(!loadedState) {
+					loadedAmmo += loadSpeed;
+					if(loadedAmmo>=magazineCapacity) {
+						loadedState = 1;
+						player.ammo = magazineCapacity;
+					}
+				}
+			}
+		}
+
+		if (player.health<=0) {
+			//deathScreen()		//treba vyrobit funkciu, ktora zobrazi GAME OVER
+			break;				//ukonci sa hra a dostaneme sa do main menu
+
+		}
+
 	}
+
+	if(player.health>0) {
+		//winScreen();				//treba vyrobit funkciu, ktroa zobrazi LEVEL COMPLETE
+	}
+	//potom sa vratime do menu...
 }
 
 

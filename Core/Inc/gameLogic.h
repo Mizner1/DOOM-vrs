@@ -25,6 +25,7 @@ typedef struct {
     float x, y, z;      // Player position
     float rotation;  // Horizontal rotation angle (in degrees)
     int16_t health;      // Player health
+    int16_t armor;       // Player armor
     int16_t ammo;        // Player ammo
 } Player;
 

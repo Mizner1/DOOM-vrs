@@ -7,9 +7,9 @@
 #include "gameLogic.h"
 #include "spi.h"
 
-int16_t ammo = 24;
-int16_t health = 78;
-int16_t armor = 0;
+int16_t ammo = 10;
+int16_t health = 100;
+int16_t armor = 100;
 char ammoText[16];
 char healthText[16];
 char armorText[16];
@@ -31,7 +31,7 @@ void drawMenu() {
 	sprintf(healthText, "%d%%", health);
 	lcdPutS(healthText, 145, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
 
-	lcdPutS("ARMOR", 35, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	lcdPutS("ARMOR", 80, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
 	sprintf(armorText, "%d%%", armor);
 	lcdPutS(armorText, 20, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
 }
@@ -51,22 +51,8 @@ void clearMenu() {
     lcdPutS("HEALTH", 160, 230, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
     lcdPutS("", 145, 222, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
 
-    lcdPutS("ARMOR", 35, 230, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
+    lcdPutS("ARMOR", 60, 230, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
     lcdPutS("", 20, 222, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
-}
-
-void lowerMenu() {
-	lcdPutS("AMMO", 305, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
-	sprintf(ammoText, "%d", ammo);
-	lcdPutS(ammoText, 295, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
-
-	lcdPutS("HEALTH", 160, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
-	sprintf(healthText, "%d%%", health);
-	lcdPutS(healthText, 145, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
-
-	lcdPutS("ARMOR", 35, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
-	sprintf(armorText, "%d%%", armor);
-	lcdPutS(armorText, 20, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
 }
 
 void drawDifficulty() {
@@ -115,7 +101,7 @@ void menu(){
 
 	int select = 1;			//tymto sa vybera iba v main menu
 
-	while(select != 6)	//main menu cycle
+	while(1)	//main menu cycle
 	{
 
 		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1) == GPIO_PIN_RESET)	//choose lower option
@@ -178,8 +164,11 @@ void menu(){
 		}
 
 		//zacat novu hru
-		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET && select == 0)
-			select = 6;
+		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET && select == 0) {
+			clearMenu();
+			startNewGame(difficulity);
+			drawMenu();
+		}
 
 
 		// odkaz pre Mira: tak ako robil Matej menu, tak skus podobne urobit options a aj readme.
@@ -256,12 +245,14 @@ void menu(){
 			drawMenu();
 		}
 
+		//ked kliknes na "quit", tak sa ukonci cely program, potom treba restartovat STMko
+		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET && select == 5) {
+			clearMenu();
+			break;
+		}
 
-
-	clearMenu();
-	// myslim, ze uz sa da prepinat difficulity, takze hra sa bude dat spustit
-	//startNewGame(difficulity);
 	}
+	lcdPutSSized("the game has been quit.", 300, 120, decodeRgbValue(100, 100, 100), decodeRgbValue(0, 0, 0),1);
 }
 
 /*
