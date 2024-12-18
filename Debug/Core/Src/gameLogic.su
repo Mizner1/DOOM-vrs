@@ -13,4 +13,4 @@
 ../Core/Src/gameLogic.c:177:6:drawHealth	40	static
 ../Core/Src/gameLogic.c:184:6:drawArmor	40	static
 ../Core/Src/gameLogic.c:191:6:startNewGame	16	static
-../Core/Src/gameLogic.c:198:6:gameLoop	136	static
+../Core/Src/gameLogic.c:197:6:gameLoop	176	static

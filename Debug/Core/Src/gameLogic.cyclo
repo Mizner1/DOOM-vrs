@@ -13,4 +13,4 @@
 ../Core/Src/gameLogic.c:177:6:drawHealth	1
 ../Core/Src/gameLogic.c:184:6:drawArmor	1
 ../Core/Src/gameLogic.c:191:6:startNewGame	1
-../Core/Src/gameLogic.c:198:6:gameLoop	31
+../Core/Src/gameLogic.c:197:6:gameLoop	42

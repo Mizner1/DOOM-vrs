@@ -1,7 +1,7 @@
 ../Core/Src/menu.c:19:6:drawMenu	24	static
 ../Core/Src/menu.c:45:6:clearMenu	24	static
-../Core/Src/menu.c:69:6:drawDifficulty	24	static
-../Core/Src/menu.c:76:6:clearDifficulty	24	static
-../Core/Src/menu.c:83:1:drawReadme	24	static
-../Core/Src/menu.c:90:1:clearReadme	24	static
-../Core/Src/menu.c:96:6:menu	32	static
+../Core/Src/menu.c:57:6:drawDifficulty	24	static
+../Core/Src/menu.c:64:6:clearDifficulty	24	static
+../Core/Src/menu.c:71:6:drawReadme	24	static
+../Core/Src/menu.c:78:6:clearReadme	24	static
+../Core/Src/menu.c:85:6:menu	32	static

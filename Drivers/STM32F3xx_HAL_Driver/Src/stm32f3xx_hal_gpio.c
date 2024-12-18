@@ -104,6 +104,10 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f3xx_hal.h"
+#include "ili9163.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 /** @addtogroup STM32F3xx_HAL_Driver
   * @{
@@ -389,6 +393,11 @@ GPIO_PinState HAL_GPIO_ReadPin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
 
   if((GPIOx->IDR & GPIO_Pin) != (uint32_t)GPIO_PIN_RESET)
   {
+	/*char xxx[16];
+	lcdPutS("joy out", 280, 80, decodeRgbValue(255, 255, 255), decodeRgbValue(0, 0, 0));
+	int k = (int)(GPIOx->IDR);
+	sprintf(xxx, "%d ", k );
+	lcdPutS(xxx, 200, 80, decodeRgbValue(255, 255, 255), decodeRgbValue(0, 0, 0));*/
     bitstatus = GPIO_PIN_SET;
   }
   else

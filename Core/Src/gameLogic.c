@@ -134,7 +134,7 @@ void movePlayer(Player *player, float stepX, float stepY, uint8_t polar) {
 	//treba doladit znamienka a sin/cos funkcie na moveX a moveY
 	if (polar){	//ak sa hybeme vzhladom na natocenie hraca
 		moveX = stepX*cos(player->rotation) + stepY*sin(player->rotation);
-		moveY = stepX*sin(player->rotation) + stepY*cos(player->rotation);
+		moveY = stepX*sin(player->rotation) + (-1)*stepY*cos(player->rotation);
 	}
 	else{		//ak chceme hraca premiestnit bez ohladu jeho na rotaciu
 		moveX = stepX;
@@ -189,7 +189,6 @@ void drawArmor() {
 }
 
 void startNewGame(int16_t difficulity){
-	initPolygons();
 	initPlayer();
 	initEnemy();
 	gameLoop(difficulity);
@@ -200,6 +199,13 @@ void gameLoop(int16_t difficulity){
 	// pre nepriatelov mozes pouzit strukturu hraca. Ich vykreslovanie potom ja dokoncim
 
 	int8_t step = 5;	// kazdych 10 pixelov bude bodka, samozrejme 5 je lepsie, ale viac laguje
+
+	//premenne potrebne na zastavenie hraca
+	uint8_t stay = 0;
+	uint8_t xm = 0;
+	uint8_t ym = 0;
+	uint8_t predX = 0;
+	uint8_t predY = 0;
 
 	float vzX = 0;			//vzdialenost medzi hracom a nepriatelom
 	float vzY = 0;
@@ -232,8 +238,8 @@ void gameLoop(int16_t difficulity){
 		kills2win = 5;
 		break;
 	case 2:
-		enemySpeed = 30;
-		enemyDamage = 40;
+		enemySpeed = 40;
+		enemyDamage = 20;
 		kills2win = 10;
 		break;
 	}
@@ -251,58 +257,83 @@ void gameLoop(int16_t difficulity){
 
 	while(kills < kills2win){		// hlavny cyklus hry
 
+		//debugujem vystup z joysticku
+		/*char joyX[16];
+		char joyY[16];
+		lcdPutS("joyX output", 280, 50, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
+		sprintf(joyX, "%d ", HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_1) );
+		lcdPutS(joyX, 200, 50, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
+		lcdPutS("joyY output", 280, 60, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
+		sprintf(joyY, "%d ", HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_0) );
+		lcdPutS(joyY, 200, 60, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
 
-
-		// vykreslovanie mapy
-		for (int i = 0; i < polygonCount; i++) {	//nakresli mapu so stenami
-			lcd3DPolyline(polygons[i].vertices, polygons[i].numVertices, polygons[i].color, player.x, player.y, player.z, player.rotation, 1, step);
-		}
-		for (int i = 0; i < polygonCount; i++) {	//nakresli mapu so stenami
-			lcd3DPolyline(polygons[i].vertices, polygons[i].numVertices, decodeRgbValue(0, 0, 0), player.x, player.y, player.z, player.rotation, 1, step);
-		}
-
-		//ovladanie cez tlacitka - FUNGUJE ale takto to nechceme
-		/*if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1) == GPIO_PIN_RESET){
-			movePlayer(&player, 50, 0, 1);
-		}
-		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0) == GPIO_PIN_RESET){
-			movePlayer(&player, -50, 0, 1);
-		}
-		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET){
-			rotatePlayer(&player, +3.1416/10);
-		}*/
-
+		lcdPutS("joyX output", 280, 50, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+		sprintf(joyX, "%d ", HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_1) );
+		lcdPutS(joyX, 200, 50, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+		lcdPutS("joyY output", 280, 60, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+		sprintf(joyY, "%d ", HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_0) );
+		lcdPutS(joyY, 200, 60, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));*/
 
 
 		//ovladanie cez joystick (testujeme)
 		// treba zistit v akom formate su vystupy z jousticku a ake maju hodnoty
 		// domnievam za, ze je to od 0 do nieco, asi 255., tiez vraj 0-553-1000
-		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1) > 603){
-			movePlayer(&player, 50, 0, 1);
+		/*predX = xm;
+		predY = ym;
+		xm = HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_1);
+		ym = HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_0);
+		if((xm!=predX)||(ym!=predY)) {
+			stay = 1;
 		}
-		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1) < 503){
-			movePlayer(&player, -50, 0, 1);
-		}
-		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0) > 603){
-			movePlayer(&player, 0, 50, 1);
-		}
-		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0) < 503){
-			movePlayer(&player, 0, -50, 1);
-		}
-		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1) == GPIO_PIN_RESET){
-			rotatePlayer(&player, +3.1416/10);
-		}
-
-
-
-		//ukoncit level predcasne a vstupit do main menu
-		/*if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0) == GPIO_PIN_RESET){
-			break;
+		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_7) == GPIO_PIN_RESET){
+			stay = 0;
 		}*/
 
 
+		/*if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_10) == GPIO_PIN_SET){
+			stay = 0;
+		}
+		if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_10) == GPIO_PIN_RESET){
+			stay = 1;
+		}*/
 
-		if(enemy.health == 0) {		//respawnujeme nepriatela ked ho zabijeme
+		//ovladan ie cez tlacitka
+		/*if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1) == GPIO_PIN_RESET){
+			movePlayer(&player, 0, +50, 1);
+		}
+		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0) == GPIO_PIN_RESET){
+			movePlayer(&player, 0, -50, 1);
+		}*/
+
+
+		if(!stay) {
+			if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_1) == 1){
+				movePlayer(&player, 50, 0, 1);
+			}
+			if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_1) == 0){
+				movePlayer(&player, -50, 0, 1);
+			}
+			if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_0) == 1){
+				movePlayer(&player, 0, 50, 1);
+			}
+			if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_0) == 0){
+				movePlayer(&player, 0, -50, 1);
+			}
+		}
+
+
+
+
+		if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_8) == GPIO_PIN_RESET){
+			rotatePlayer(&player, +3.1416/10);
+		}
+		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET){
+			rotatePlayer(&player, -3.1416/10);
+		}
+
+
+
+		if(enemy.health <= 0) {		//respawnujeme nepriatela ked ho zabijeme
 			kills++;
 			drawScore(kills);
 			initEnemy();
@@ -337,23 +368,59 @@ void gameLoop(int16_t difficulity){
 				}
 			}
 
-			//nakreslit nepriatela
+		}
+
+
+
+
+
+
+
+		//nakreslit nepriatela
+		if(enemy.health > 0) {
 			int16_t enemyCoords[3] = {(int16_t)(enemy.x), (int16_t)(enemy.y), (int16_t)(enemy.z)};
-			//int16_t enemyCoords[3] = (int16_t)(enemyCoordsF);
 			float_t playerCoords[3] = {player.x, player.y, player.z};
 			float twoDCoords[2];
-			//lcd3DPolyline(polygons[i].vertices, polygons[i].numVertices, polygons[i].color, player.x, player.y, player.z, player.rotation, 1, step);
 			threeDto2D(&enemyCoords, playerCoords, player.rotation, twoDCoords);
 			int16_t enX = (int16_t)(twoDCoords[0]);
 			int16_t enY = (int16_t)(twoDCoords[1]);
 			int16_t rad = (int16_t)(5000/vz);
 			lcdCircle(enX, enY, rad, decodeRgbValue(255, 0, 0));
-			lcdCircle(enX, enY, rad, decodeRgbValue(0, 0, 0));
 		}
+
+		// vykreslovanie mapy
+		for (int i = 0; i < polygonCount; i++) {	//nakresli mapu so stenami
+			lcd3DPolyline(polygons[i].vertices, polygons[i].numVertices, polygons[i].color, player.x, player.y, player.z, player.rotation, 1, step);
+		}
+
+		//ovladanie cez tlacitka - FUNGUJE ale takto to nechceme
+		/*if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1) == GPIO_PIN_RESET){
+			movePlayer(&player, 50, 0, 1);
+		}
+		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0) == GPIO_PIN_RESET){
+			movePlayer(&player, -50, 0, 1);
+		}
+		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET){
+			rotatePlayer(&player, +3.1416/10);
+		}*/
+
+
+
+
+
+
+
 
 		//mechanika strelby
 		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1) == GPIO_PIN_RESET){
 			if(player.ammo>0) {			//ak mame naboje
+				//zobrazit vystrel
+				lcdFilledRectangle(130, 195, 150, 215, decodeRgbValue(255, 255, 0));
+				lcdLine(140, 195, 160, 120, decodeRgbValue(255, 255, 0));
+
+				lcdFilledRectangle(130, 195, 150, 215, decodeRgbValue(0, 0, 0));
+				lcdLine(140, 195, 160, 120, decodeRgbValue(0, 0, 0));
+
 				player.ammo--;
 				drawAmmo();
 
@@ -367,7 +434,7 @@ void gameLoop(int16_t difficulity){
 					bulletX += bulletSpeed*cos(bulletAngle) ;
 					bulletX += bulletSpeed*sin(bulletAngle) ;
 					enemyDist = sqrt((enemy.x-bulletX)*(enemy.x-bulletX)+(enemy.y-bulletY)*(enemy.y-bulletY));
-					if(enemyDist<50) {			//ak zasiahne nepriatela
+					if(enemyDist<200) {			//ak zasiahne nepriatela
 						enemy.health -= bulletDamage;
 						break;
 					}
@@ -377,15 +444,35 @@ void gameLoop(int16_t difficulity){
 					loadedAmmo = 0;
 				}
 			}
-			else if(player.ammo<=0) {	//ked dojdu naboje, tak reload
-				if(!loadedState) {
-					loadedAmmo += loadSpeed;
-					if(loadedAmmo>=magazineCapacity) {
-						loadedState = 1;
-						player.ammo = magazineCapacity;
-					}
+		}
+		if(player.ammo<=0) {	//ked dojdu naboje, tak reload
+			if(!loadedState) {
+				loadedAmmo += loadSpeed;
+				if(loadedAmmo>=magazineCapacity) {
+					loadedState = 1;
+					player.ammo = magazineCapacity;
+					drawAmmo();
 				}
 			}
+		}
+
+		//vymazat nepriatela
+		int16_t enemyCoords[3] = {(int16_t)(enemy.x), (int16_t)(enemy.y), (int16_t)(enemy.z)};
+		float_t playerCoords[3] = {player.x, player.y, player.z};
+		float twoDCoords[2];
+		threeDto2D(&enemyCoords, playerCoords, player.rotation, twoDCoords);
+		int16_t enX = (int16_t)(twoDCoords[0]);
+		int16_t enY = (int16_t)(twoDCoords[1]);
+		int16_t rad = (int16_t)(5000/vz);
+		lcdCircle(enX, enY, rad, decodeRgbValue(0, 0, 0));
+
+		for (int i = 0; i < polygonCount; i++) {	//vymaze mapu so stenami
+			lcd3DPolyline(polygons[i].vertices, polygons[i].numVertices, decodeRgbValue(0, 0, 0), player.x, player.y, player.z, player.rotation, 1, step);
+		}
+
+		//ukoncit level predcasne a vstupit do main menu
+		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0) == GPIO_PIN_RESET){
+			break;
 		}
 
 		if (player.health<=0) {
@@ -399,11 +486,18 @@ void gameLoop(int16_t difficulity){
 
 	}
 
-	if(player.health>0) {
+	if((player.health>0)&&(kills==kills2win)) {
 		//winScreen();				//treba vyrobit funkciu, ktroa zobrazi LEVEL COMPLETE
 		lcdPutSSized("level complete", 270, 112, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),3);
 		LL_mDelay(1000);
 		lcdPutSSized("level complete", 270, 112, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),3);
+
+	}
+	if((player.health>0)&&(kills<kills2win)) {
+		//winScreen();				//treba vyrobit funkciu, ktroa zobrazi LEVEL COMPLETE
+		lcdPutSSized("ending level", 270, 112, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),3);
+		LL_mDelay(1000);
+		lcdPutSSized("ending level", 270, 112, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),3);
 
 	}
 	//potom sa vratime do menu...

@@ -111,6 +111,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   lcdInitialise(LCD_ORIENTATION3);
   lcdClearDisplay(decodeRgbValue(0, 0, 0));
+  initPolygons();
 
   /* USER CODE END 2 */
 
@@ -118,18 +119,13 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
-	//buttonD4_val = LL_GPIO_ReadInputPort(LL_GPIO_PIN_ALL);
-
-	buttonD4_val = LL_GPIO_IsInputPinSet(GPIOB,GPIO_PIN_4);
-	if(buttonD4_val == 0)
-	{
 	  menu();
 	  LL_mDelay(300);
-	}
   }
+  /* USER CODE END WHILE */
+
+  /* USER CODE BEGIN 3 */
+
   /* USER CODE END 3 */
 }
 
