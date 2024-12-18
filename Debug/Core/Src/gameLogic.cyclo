@@ -8,9 +8,9 @@
 ../Core/Src/gameLogic.c:117:6:initEnemy	1
 ../Core/Src/gameLogic.c:129:6:movePlayer	6
 ../Core/Src/gameLogic.c:153:6:rotatePlayer	3
-../Core/Src/gameLogic.c:163:6:startNewGame	1
-../Core/Src/gameLogic.c:170:6:drawAmmo	1
-../Core/Src/gameLogic.c:177:6:drawScore	1
-../Core/Src/gameLogic.c:184:6:drawHealth	1
-../Core/Src/gameLogic.c:191:6:drawArmor	1
-../Core/Src/gameLogic.c:198:6:gameLoop	32
+../Core/Src/gameLogic.c:163:6:drawAmmo	1
+../Core/Src/gameLogic.c:170:6:drawScore	1
+../Core/Src/gameLogic.c:177:6:drawHealth	1
+../Core/Src/gameLogic.c:184:6:drawArmor	1
+../Core/Src/gameLogic.c:191:6:startNewGame	1
+../Core/Src/gameLogic.c:198:6:gameLoop	31

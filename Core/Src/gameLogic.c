@@ -296,9 +296,9 @@ void gameLoop(int16_t difficulity){
 
 
 		//ukoncit level predcasne a vstupit do main menu
-		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0) == GPIO_PIN_RESET){
+		/*if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0) == GPIO_PIN_RESET){
 			break;
-		}
+		}*/
 
 
 
@@ -308,7 +308,6 @@ void gameLoop(int16_t difficulity){
 			initEnemy();
 		}
 		if(enemy.health > 0) {		//logika nepriatela kym je nazive
-			//nakreslit nepriatela
 
 			vzX = enemy.x - player.x;
 			vzY = enemy.y - player.y;
@@ -337,6 +336,19 @@ void gameLoop(int16_t difficulity){
 					drawHealth();
 				}
 			}
+
+			//nakreslit nepriatela
+			int16_t enemyCoords[3] = {(int16_t)(enemy.x), (int16_t)(enemy.y), (int16_t)(enemy.z)};
+			//int16_t enemyCoords[3] = (int16_t)(enemyCoordsF);
+			float_t playerCoords[3] = {player.x, player.y, player.z};
+			float twoDCoords[2];
+			//lcd3DPolyline(polygons[i].vertices, polygons[i].numVertices, polygons[i].color, player.x, player.y, player.z, player.rotation, 1, step);
+			threeDto2D(&enemyCoords, playerCoords, player.rotation, twoDCoords);
+			int16_t enX = (int16_t)(twoDCoords[0]);
+			int16_t enY = (int16_t)(twoDCoords[1]);
+			int16_t rad = (int16_t)(5000/vz);
+			lcdCircle(enX, enY, rad, decodeRgbValue(255, 0, 0));
+			lcdCircle(enX, enY, rad, decodeRgbValue(0, 0, 0));
 		}
 
 		//mechanika strelby

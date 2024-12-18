@@ -8,9 +8,9 @@
 ../Core/Src/gameLogic.c:117:6:initEnemy	8	static
 ../Core/Src/gameLogic.c:129:6:movePlayer	48	static
 ../Core/Src/gameLogic.c:153:6:rotatePlayer	16	static
-../Core/Src/gameLogic.c:163:6:startNewGame	16	static
-../Core/Src/gameLogic.c:170:6:drawAmmo	40	static
-../Core/Src/gameLogic.c:177:6:drawScore	48	static
-../Core/Src/gameLogic.c:184:6:drawHealth	40	static
-../Core/Src/gameLogic.c:191:6:drawArmor	40	static
-../Core/Src/gameLogic.c:198:6:gameLoop	104	static
+../Core/Src/gameLogic.c:163:6:drawAmmo	40	static
+../Core/Src/gameLogic.c:170:6:drawScore	48	static
+../Core/Src/gameLogic.c:177:6:drawHealth	40	static
+../Core/Src/gameLogic.c:184:6:drawArmor	40	static
+../Core/Src/gameLogic.c:191:6:startNewGame	16	static
+../Core/Src/gameLogic.c:198:6:gameLoop	136	static
