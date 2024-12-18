@@ -20,10 +20,10 @@ void drawMenu() {
 	lcdPutSSized("DOOM", 250, 0, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),8);
 	lcdPutSSized("NEW GAME", 205, 64, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
 	lcdPutSSized("OPTIONS", 205, 80, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
-	lcdPutSSized("LOAD GAME", 205, 96, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
-	lcdPutSSized("SAVE GAME", 205, 112, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
-	lcdPutSSized("READ THIS!", 205, 128, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
-	lcdPutSSized("QUIT GAME", 205, 144, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
+	//lcdPutSSized("LOAD GAME", 205, 96, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
+	//lcdPutSSized("SAVE GAME", 205, 112, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
+	lcdPutSSized("READ THIS!", 205, 96, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
+	lcdPutSSized("QUIT GAME", 205, 112, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
 
 	lcdPutS("AMMO", 285, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
 	sprintf(ammoText, "%d", ammo);
@@ -46,10 +46,10 @@ void clearMenu() {
     lcdPutSSized("DOOM", 250, 0, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0), 8);
     lcdPutSSized("NEW GAME", 205, 64, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0), 2);
     lcdPutSSized("OPTIONS", 205, 80, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0), 2);
-    lcdPutSSized("LOAD GAME", 205, 96, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0), 2);
-    lcdPutSSized("SAVE GAME", 205, 112, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0), 2);
-    lcdPutSSized("READ THIS!", 205, 128, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0), 2);
-    lcdPutSSized("QUIT GAME", 205, 144, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0), 2);
+    //lcdPutSSized("LOAD GAME", 205, 96, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0), 2);
+    //lcdPutSSized("SAVE GAME", 205, 112, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0), 2);
+    lcdPutSSized("READ THIS!", 205, 96, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0), 2);
+    lcdPutSSized("QUIT GAME", 205, 112, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0), 2);
 
     /*lcdPutS("AMMO", 285, 230, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
     lcdPutS("", 280, 222, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
@@ -81,9 +81,10 @@ void clearDifficulty() {
 }
 
 drawReadme() {
-	lcdPutSSized("About game", 300, 40, decodeRgbValue(255, 255, 255), decodeRgbValue(0, 0, 0),2);
-	lcdPutSSized("STM adaptation of DOOM", 310, 80, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),1);
-	lcdPutSSized("press right button to escape", 310, 220, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),1);
+	lcdPutSSized("! WARNING !", 250, 0, decodeRgbValue(255, 255, 255), decodeRgbValue(0, 0, 0),3);
+	lcdPutSSized("This game contains pixelated graphics and simplified animations inspired by retro games. While the content is minimal, it may include depictions of combat and fictional creatures. Viewer discretion is advised.", 310, 40, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),1);
+	lcdPutSSized("Welcome to DOOM Micro! This game is a simplified version of the classic DOOM, specially designed for a microcontroller. Survive, fight, and conquer the pixelated demons! Use the controls to move, aim, and shoot. Watch your health and ammo, and don't forget—every move counts. Good luck, Marine. The fate of humanity is in your hands!", 310, 112, decodeRgbValue(255, 255, 255), decodeRgbValue(0, 0, 0),1);
+	//lcdPutSSized("press right button to escape", 310, 220, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),1);
 }
 
 clearReadme() {
@@ -108,9 +109,8 @@ void menu(){
 	char healthText[16];
 	char armorText[16];
 */
-//lowerMenu();
 
-	int select = 1;			//tymto sa vybera iba v main menu
+	int select = 2;			//tymto sa vybera iba v main menu
 
 	while(1)	//main menu cycle
 	{
@@ -134,32 +134,26 @@ void menu(){
 		if(select == 0)
 		{
 			lcdPutSSized("NEW GAME", 205, 64, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),2);
+			LL_mDelay(750);
 			lcdPutSSized("NEW GAME", 205, 64, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
 		}
 		if(select == 1)
 		{
 			lcdPutSSized("OPTIONS", 205, 80, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),2);
+			LL_mDelay(750);
 			lcdPutSSized("OPTIONS", 205, 80, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
 		}
 		if(select == 2)
 		{
-			lcdPutSSized("LOAD GAME", 205, 96, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),2);
-			lcdPutSSized("LOAD GAME", 205, 96, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
+			lcdPutSSized("READ THIS!", 205, 96, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),2);
+			LL_mDelay(750);
+			lcdPutSSized("READ THIS!", 205, 96, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
 		}
 		if(select == 3)
 		{
-			lcdPutSSized("SAVE GAME", 205, 112, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),2);
-			lcdPutSSized("SAVE GAME", 205, 112, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
-		}
-		if(select == 4)
-		{
-			lcdPutSSized("READ THIS!", 205, 128, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),2);
-			lcdPutSSized("READ THIS!", 205, 128, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
-		}
-		if(select == 5)
-		{
-			lcdPutSSized("QUIT GAME", 205, 144, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),2);
-			lcdPutSSized("QUIT GAME", 205, 144, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
+			lcdPutSSized("QUIT GAME", 205, 112, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),2);
+			LL_mDelay(750);
+			lcdPutSSized("QUIT GAME", 205, 112, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
 		}
 
 		//zacat novu hru
@@ -176,11 +170,11 @@ void menu(){
 
 		// takto nejako si predstavujem options, skus to rozvinut
 		//enter options menu
-		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET && select == 1){
+/*		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET && select == 1){
 			clearMenu();
 			drawDifficulty();
 			while(1){
-
+*/
 				// vyber difficulity podla stlacenia tlacitok
 				/*if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1) == GPIO_PIN_RESET)	//choose option above
 				{
@@ -198,7 +192,7 @@ void menu(){
 						difficulity++;
 				}*/
 
-
+/*
 				if(difficulity == 0)
 				{
 					lcdPutSSized("EASY", 210, 80, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),2);
@@ -219,30 +213,30 @@ void menu(){
 					LL_mDelay(500);
 					lcdPutSSized("HARD", 210, 144, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
 				}
-
+*/
 				//ukoncit options menu potvrdenim vyberu, snad pin3 je spravny pin
 				/*if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET){
 					clearDifficulty();
 					drawMenu();
 					break;
 				}*/
-			}
-		}
+//			}
+//		}
 
 		//ked kliknes na "read this"
-		/*if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET && select == 4) {
+		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET && select == 2) {
 			clearMenu();
 			drawReadme();
 			while(1) {
 				if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET){
-					clearDifficulty();
-					drawMenu();
-					break;
+					//clearDifficulty();
+					//drawMenu();
+					//break;
 				}
 			}
 			clearReadme();
 			drawMenu();
-		}*/
+		}
 
 		//ked kliknes na "quit", tak sa ukonci cely program, potom treba restartovat STMko
 		/*if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET && select == 5) {
@@ -258,4 +252,3 @@ void menu(){
  * po prejdeni z hlavneho menu na options menu mi tam vypise este save game read this quit neviem preco
  * v options sekcii mi nejde manualne menit obtiaznost stale to select sa rovna len jednotke a neviem preco
 */
-

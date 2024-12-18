@@ -3,5 +3,5 @@
 ../Core/Src/menu.c:69:6:drawDifficulty	1
 ../Core/Src/menu.c:76:6:clearDifficulty	1
 ../Core/Src/menu.c:83:1:drawReadme	1
-../Core/Src/menu.c:89:1:clearReadme	1
-../Core/Src/menu.c:95:6:menu	20
+../Core/Src/menu.c:90:1:clearReadme	1
+../Core/Src/menu.c:96:6:menu	15

@@ -3,5 +3,5 @@
 ../Core/Src/menu.c:69:6:drawDifficulty	24	static
 ../Core/Src/menu.c:76:6:clearDifficulty	24	static
 ../Core/Src/menu.c:83:1:drawReadme	24	static
-../Core/Src/menu.c:89:1:clearReadme	24	static
-../Core/Src/menu.c:95:6:menu	32	static
+../Core/Src/menu.c:90:1:clearReadme	24	static
+../Core/Src/menu.c:96:6:menu	32	static
