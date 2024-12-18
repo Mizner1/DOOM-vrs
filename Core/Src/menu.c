@@ -72,6 +72,7 @@ void drawReadme() {
 	lcdPutSSized("! WARNING !", 250, 0, decodeRgbValue(255, 255, 255), decodeRgbValue(0, 0, 0),3);
 	lcdPutSSized("This game contains pixelated graphics and simplified animations inspired by retro games. While the content is minimal, it may include depictions of combat and fictional creatures. Viewer discretion is advised.", 310, 40, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),1);
 	lcdPutSSized("Welcome to DOOM Micro! This game is a simplified version of the classic DOOM, specially designed for a microcontroller. Survive, fight, and conquer the pixelated demons! Use the controls to move, aim, and shoot. Watch your health and ammo, and don't forget every move counts. Good luck, Marine. The fate of humanity is in your hands!", 310, 112, decodeRgbValue(255, 255, 255), decodeRgbValue(0, 0, 0),1);
+	lcdPutSSized("Please use joystick for moving up for shooting down for quit and left right for rotation", 310, 190, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),1);
 	lcdPutSSized("press right button to escape", 310, 220, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),1);
 }
 
@@ -79,6 +80,7 @@ void clearReadme() {
 	lcdPutSSized("! WARNING !", 250, 0, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),3);
 	lcdPutSSized("This game contains pixelated graphics and simplified animations inspired by retro games. While the content is minimal, it may include depictions of combat and fictional creatures. Viewer discretion is advised.", 310, 40, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),1);
 	lcdPutSSized("Welcome to DOOM Micro! This game is a simplified version of the classic DOOM, specially designed for a microcontroller. Survive, fight, and conquer the pixelated demons! Use the controls to move, aim, and shoot. Watch your health and ammo, and don't forget every move counts. Good luck, Marine. The fate of humanity is in your hands!", 310, 112, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),1);
+	lcdPutSSized("Please use joystick for moving up for shooting down for quit and left right for rotation", 310, 190, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),1);
 	lcdPutSSized("press right button to escape", 310, 220, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),1);
 }
 
@@ -208,6 +210,8 @@ void menu(){
 		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET && select == 2) {
 			clearMenu();
 			drawReadme();
+			LL_mDelay(5000);
+			clearReadme();
 			while(1) {
 				if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET){
 					clearDifficulty();
@@ -215,7 +219,6 @@ void menu(){
 					break;
 				}
 			}
-			clearReadme();
 			drawMenu();
 		}
 
@@ -226,13 +229,7 @@ void menu(){
 		}
 
 	}
-	lcdPutSSized("the game has been quit.", 300, 120, decodeRgbValue(100, 100, 100), decodeRgbValue(0, 0, 0),1);
+	lcdPutSSized("the game has been quit.", 220, 120, decodeRgbValue(100, 100, 100), decodeRgbValue(0, 0, 0),1);
 	LL_mDelay(2000);
-	lcdPutSSized("the game has been quit.", 300, 120, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),1);
+	lcdPutSSized("the game has been quit.", 220, 120, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),1);
 }
-
-/*
- * po prejdeni z hlavneho menu na options menu mi tam vypise este save game read this quit neviem preco
- * v options sekcii mi nejde manualne menit obtiaznost stale to select sa rovna len jednotke a neviem preco
-*/
-
