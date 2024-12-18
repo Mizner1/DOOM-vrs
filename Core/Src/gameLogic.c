@@ -160,9 +160,38 @@ void rotatePlayer(Player *player, float angle) {
 	}
 }
 
+void drawAmmo() {
+	char ammoText[16];
+	lcdPutS("AMMO", 285, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	sprintf(ammoText, "%d ", player.ammo);
+	lcdPutS(ammoText, 280, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+}
+
+void drawScore(int16_t score) {
+	char scoreText[16];
+	lcdPutS("SCORE", 200, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	sprintf(scoreText, "%d ", score);
+	lcdPutS(scoreText, 195, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+}
+
+void drawHealth() {
+	char healthText[16];
+	lcdPutS("HEALTH", 140, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	sprintf(healthText, "%d ", player.health);
+	lcdPutS(healthText, 135, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+}
+
+void drawArmor() {
+	char armorText[16];
+	lcdPutS("ARMOR", 50, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	sprintf(armorText, "%d ", player.armor);
+	lcdPutS(armorText, 50, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+}
+
 void startNewGame(int16_t difficulity){
-	initPolygons(0);
-	initPlayer(0);
+	initPolygons();
+	initPlayer();
+	initEnemy();
 	gameLoop(difficulity);
 }
 
@@ -172,8 +201,6 @@ void gameLoop(int16_t difficulity){
 
 	int8_t step = 5;	// kazdych 10 pixelov bude bodka, samozrejme 5 je lepsie, ale viac laguje
 
-	int16_t kills2win = 1; // podmienka na skoncenie levelu, zavisi od obtiaznosti
-	int16_t kills = 0;
 	float vzX = 0;			//vzdialenost medzi hracom a nepriatelom
 	float vzY = 0;
 	float vz = 0;
@@ -189,40 +216,37 @@ void gameLoop(int16_t difficulity){
 	float bulletY = 0;
 	float bulletAngle = 0;			//smer strely
 
+	int16_t kills = 0;
+	int16_t kills2win = 0; // podmienka na skoncenie levelu, zavisi od obtiaznosti
 	int16_t enemySpeed = 0;
 	int16_t enemyDamage = 0;
 	switch(difficulity){	//podla urcenej obtiaznosti sa nastavia parametre hry
 	case 0:
 		enemySpeed = 10;
 		enemyDamage = 5;
+		kills2win = 1;
 		break;
 	case 1:
 		enemySpeed = 20;
 		enemyDamage = 10;
+		kills2win = 5;
 		break;
 	case 2:
 		enemySpeed = 30;
 		enemyDamage = 40;
+		kills2win = 10;
 		break;
 	}
 
-	lcdPutS("beta testing:", 220, 10, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
-	lcdRectangle(20, 225, 300, 250, decodeRgbValue(255, 255, 255)); //dolny status bar
-	lcdCircle(160,232,5,decodeRgbValue(255, 255, 255)); //akysi kruh, v povodnej doom je tam hlava hraca
-	char ammoText[16];
-	char healthText[16];
-	char armorText[16];
-	lcdPutS("AMMO", 305, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
-	sprintf(ammoText, "%d", player.ammo);
-	lcdPutS(ammoText, 295, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	lcdRectangle(20, 220, 300, 250, decodeRgbValue(255, 255, 255)); //dolny status bar
+	lcdCircle(160,230,8,decodeRgbValue(255, 255, 255)); //akysi kruh, v povodnej doom je tam hlava hraca
 
-	lcdPutS("HEALTH", 140, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
-	sprintf(healthText, "%d%%", player.health);
-	lcdPutS(healthText, 145, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	drawAmmo();
+	drawHealth();
+	drawArmor();
+	drawScore(kills);
 
-	lcdPutS("ARMOR", 80, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
-	sprintf(armorText, "%d%%", player.armor);
-	lcdPutS(armorText, 20, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+
 
 
 	while(kills < kills2win){		// hlavny cyklus hry
@@ -271,23 +295,21 @@ void gameLoop(int16_t difficulity){
 
 
 
-		//nejako takto si predstavujem menu pocas hry, ze stlacis tlacitko
-		// a nasledne sa spusti cyklus, kde bude "in game" menu s moznostami
-		// end game, resume, mozno aj quicksave(nech je vsetko na jednom mieste)
-		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0) < 0){
-			//premaz celu obrazovku nekou funkciou...
-			menu();
-			// pripadne samostatne menu do hry, ak bude treba...
-			// gamemenu();
+		//ukoncit level predcasne a vstupit do main menu
+		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0) == GPIO_PIN_RESET){
+			break;
 		}
 
 
 
 		if(enemy.health == 0) {		//respawnujeme nepriatela ked ho zabijeme
 			kills++;
+			drawScore(kills);
 			initEnemy();
 		}
 		if(enemy.health > 0) {		//logika nepriatela kym je nazive
+			//nakreslit nepriatela
+
 			vzX = enemy.x - player.x;
 			vzY = enemy.y - player.y;
 			vz = sqrt(vzX*vzX + vzY*vzX);
@@ -308,15 +330,11 @@ void gameLoop(int16_t difficulity){
 			else if(vz<50) {				//melee damage near player
 				if(player.armor>0) {
 					player.armor -= enemyDamage;
-					lcdPutS("ARMOR", 80, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
-					sprintf(armorText, "%d%%", player.armor);
-					lcdPutS(armorText, 20, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+					drawArmor();
 				}
 				else{
 					player.health -= enemyDamage;
-					lcdPutS("HEALTH", 160, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
-					sprintf(healthText, "%d%%", player.health);
-					lcdPutS(healthText, 145, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+					drawHealth();
 				}
 			}
 		}
@@ -325,9 +343,7 @@ void gameLoop(int16_t difficulity){
 		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1) == GPIO_PIN_RESET){
 			if(player.ammo>0) {			//ak mame naboje
 				player.ammo--;
-				lcdPutS("AMMO", 305, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
-				sprintf(ammoText, "%d", player.ammo);
-				lcdPutS(ammoText, 295, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+				drawAmmo();
 
 				float enemyDist = 0;
 				bulletX = player.x;
@@ -362,6 +378,9 @@ void gameLoop(int16_t difficulity){
 
 		if (player.health<=0) {
 			//deathScreen()		//treba vyrobit funkciu, ktora zobrazi GAME OVER
+			lcdPutSSized("GAME OVER", 230, 112, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),3);
+			LL_mDelay(1000);
+			lcdPutSSized("GAME OVER", 230, 112, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),3);
 			break;				//ukonci sa hra a dostaneme sa do main menu
 
 		}
@@ -370,6 +389,10 @@ void gameLoop(int16_t difficulity){
 
 	if(player.health>0) {
 		//winScreen();				//treba vyrobit funkciu, ktroa zobrazi LEVEL COMPLETE
+		lcdPutSSized("level complete", 270, 112, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),3);
+		LL_mDelay(1000);
+		lcdPutSSized("level complete", 270, 112, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),3);
+
 	}
 	//potom sa vratime do menu...
 }

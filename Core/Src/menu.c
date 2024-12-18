@@ -8,9 +8,11 @@
 #include "spi.h"
 
 int16_t ammo = 10;
+int16_t score = 10;
 int16_t health = 100;
 int16_t armor = 100;
 char ammoText[16];
+char scoreText[16];
 char healthText[16];
 char armorText[16];
 
@@ -23,17 +25,21 @@ void drawMenu() {
 	lcdPutSSized("READ THIS!", 205, 128, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
 	lcdPutSSized("QUIT GAME", 205, 144, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
 
-	lcdPutS("AMMO", 305, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	lcdPutS("AMMO", 285, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
 	sprintf(ammoText, "%d", ammo);
-	lcdPutS(ammoText, 295, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	lcdPutS(ammoText, 280, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
 
-	lcdPutS("HEALTH", 160, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	lcdPutS("SCORE", 200, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	sprintf(scoreText, "%d", score);
+	lcdPutS(scoreText, 195, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+
+	lcdPutS("HEALTH", 140, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
 	sprintf(healthText, "%d%%", health);
-	lcdPutS(healthText, 145, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	lcdPutS(healthText, 135, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
 
-	lcdPutS("ARMOR", 80, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	lcdPutS("ARMOR", 50, 230, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
 	sprintf(armorText, "%d%%", armor);
-	lcdPutS(armorText, 20, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
+	lcdPutS(armorText, 50, 222, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0));
 }
 
 void clearMenu() {
@@ -45,14 +51,19 @@ void clearMenu() {
     lcdPutSSized("READ THIS!", 205, 128, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0), 2);
     lcdPutSSized("QUIT GAME", 205, 144, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0), 2);
 
-    lcdPutS("AMMO", 305, 230, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
-    lcdPutS("", 295, 222, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
+    /*lcdPutS("AMMO", 285, 230, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
+    lcdPutS("", 280, 222, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
 
-    lcdPutS("HEALTH", 160, 230, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
-    lcdPutS("", 145, 222, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
+    lcdPutS("SCORE", 200, 230, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
+    lcdPutS("", 195, 222, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
 
-    lcdPutS("ARMOR", 60, 230, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
-    lcdPutS("", 20, 222, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
+    lcdPutS("HEALTH", 140, 230, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
+    lcdPutS("", 135, 222, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
+
+    lcdPutS("ARMOR", 50, 230, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
+    lcdPutS("", 50, 222, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));*/
+
+    lcdFilledRectangle(20, 220, 300, 240, decodeRgbValue(0, 0, 0));
 }
 
 void drawDifficulty() {
@@ -129,18 +140,6 @@ void menu(){
 		{
 			lcdPutSSized("OPTIONS", 205, 80, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),2);
 			lcdPutSSized("OPTIONS", 205, 80, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
-
-			lcdPutS("AMMO", 305, 230, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
-			sprintf(ammoText, "%d", ammo);
-			lcdPutS(ammoText, 295, 222, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
-
-			lcdPutS("HEALTH", 160, 230, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
-			sprintf(healthText, "%d%%", health);
-			lcdPutS(healthText, 145, 222, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
-
-			lcdPutS("ARMOR", 35, 230, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
-			sprintf(armorText, "%d%%", armor);
-			lcdPutS(armorText, 20, 222, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0));
 		}
 		if(select == 2)
 		{
@@ -183,7 +182,7 @@ void menu(){
 			while(1){
 
 				// vyber difficulity podla stlacenia tlacitok
-				if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1) == GPIO_PIN_RESET)	//choose lower option
+				/*if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1) == GPIO_PIN_RESET)	//choose option above
 				{
 					if(difficulity == 0)
 						difficulity = 2;
@@ -191,19 +190,19 @@ void menu(){
 						difficulity--;
 				}
 
-				if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0) == GPIO_PIN_RESET)	//choose option above
+				if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0) == GPIO_PIN_RESET)	//choose option below
 				{
 					if(difficulity == 2)
 						difficulity = 0;
 					else if(difficulity != 2)
 						difficulity++;
-				}
+				}*/
 
 
 				if(difficulity == 0)
 				{
 					lcdPutSSized("EASY", 210, 80, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),2);
-					LL_mDelay(1000);
+					LL_mDelay(500);
 					lcdPutSSized("EASY", 210, 80, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
 				}
 
@@ -217,21 +216,21 @@ void menu(){
 				if(difficulity == 2)
 				{
 					lcdPutSSized("HARD", 210, 144, decodeRgbValue(0, 0, 0), decodeRgbValue(0, 0, 0),2);
-					LL_mDelay(750);
+					LL_mDelay(500);
 					lcdPutSSized("HARD", 210, 144, decodeRgbValue(31, 31, 31), decodeRgbValue(0, 0, 0),2);
 				}
 
 				//ukoncit options menu potvrdenim vyberu, snad pin3 je spravny pin
-				if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET){
+				/*if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET){
 					clearDifficulty();
 					drawMenu();
 					break;
-				}
+				}*/
 			}
 		}
 
 		//ked kliknes na "read this"
-		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET && select == 4) {
+		/*if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET && select == 4) {
 			clearMenu();
 			drawReadme();
 			while(1) {
@@ -243,13 +242,13 @@ void menu(){
 			}
 			clearReadme();
 			drawMenu();
-		}
+		}*/
 
 		//ked kliknes na "quit", tak sa ukonci cely program, potom treba restartovat STMko
-		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET && select == 5) {
+		/*if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_3) == GPIO_PIN_RESET && select == 5) {
 			clearMenu();
 			break;
-		}
+		}*/
 
 	}
 	lcdPutSSized("the game has been quit.", 300, 120, decodeRgbValue(100, 100, 100), decodeRgbValue(0, 0, 0),1);

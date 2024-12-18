@@ -44,6 +44,10 @@ void initPlayer();
 void initEnemy();
 void movePlayer(Player *player, float stepX, float stepY, uint8_t polar);
 void rotatePlayer(Player *player, float angle);
+void drawAmmo();
+void drawScore(int16_t score);
+void drawHealth();
+void drawArmor();
 void gameLoop(int16_t difficulity);
 void startNewGame(int16_t difficility);
 
